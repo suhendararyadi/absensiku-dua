@@ -1,7 +1,32 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
+# apphosting.yaml - Place this file in your root directory (same level as package.json)
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 100
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # Firebase configuration
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSyDjhjUzY71OGrRbtLg08ZiyTuyz7c3lXuM"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "attendnow-g1s9e.firebaseapp.com"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "attendnow-g1s9e"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "attendnow-g1s9e.firebasestorage.app"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "111784377349"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:111784377349:web:8c34a8263e1c9f8486f06c"
+    availability: [BUILD, RUNTIME]
+  # Genkit API Key for chatbot
+  - variable: GEMINI_API_KEY
+    value: "AIzaSyBCrWTSkqkaPXZpkN9bTWlWf5yFdlnR8y0"
+    availability: [BUILD, RUNTIME]
