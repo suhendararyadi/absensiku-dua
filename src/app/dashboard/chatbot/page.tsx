@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -15,6 +14,17 @@ import { getClasses, getStudentsInClass, getAttendance } from '@/lib/firestore-s
 interface Message {
   role: 'user' | 'model';
   content: string;
+}
+
+interface ClassWithStudents {
+  id: string;
+  className: string;
+  studentCount: number;
+  students: {
+    id: string;
+    studentName: string;
+    nisn: string;
+  }[];
 }
 
 export default function ChatbotPage() {
@@ -38,10 +48,10 @@ export default function ChatbotPage() {
       const classesResult = await getClasses();
 
       // 2. For each class, fetch its students and structure the data
-      let classesWithStudents = [];
+      let classesWithStudents: ClassWithStudents[] = [];
       if (Array.isArray(classesResult)) {
           classesWithStudents = await Promise.all(
-              classesResult.map(async (cls) => {
+              classesResult.map(async (cls): Promise<ClassWithStudents> => {
                   const studentsResult = await getStudentsInClass(cls.id);
                   return {
                       ...cls,

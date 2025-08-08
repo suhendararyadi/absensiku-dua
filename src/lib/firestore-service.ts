@@ -1,33 +1,59 @@
-
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy, QuerySnapshot, DocumentData } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { format, subDays } from 'date-fns';
 
+// Define interfaces for type safety
+interface Class {
+    id: string;
+    className: string;
+    studentCount: number;
+}
+
+interface Student {
+    id: string;
+    studentName: string;
+    nisn: string;
+}
+
+interface AttendanceRecord {
+    studentName: string;
+    date: string;
+    status: string;
+}
+
 // Helper function to convert Firestore documents to plain objects
-const docsToObjects = (querySnapshot: any) => {
-    return querySnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+const docsToObjects = (querySnapshot: QuerySnapshot<DocumentData>) => {
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
-export async function getClasses() {
+export async function getClasses(): Promise<Class[]> {
     console.log('Fetching classes...');
     const classesQuery = query(collection(db, 'classes'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(classesQuery);
     if (snapshot.empty) {
         return [];
     }
-    const classes = docsToObjects(snapshot).map(c => ({ id: c.id, className: c.className, studentCount: c.studentCount }));
+    const classes = docsToObjects(snapshot).map((c: any): Class => ({ 
+        id: c.id, 
+        className: c.className, 
+        studentCount: c.studentCount 
+    }));
     console.log('Found classes:', classes);
     return classes;
 }
 
-export async function getStudentsInClass(classId: string) {
+export async function getStudentsInClass(classId: string): Promise<Student[]> {
     console.log(`Fetching students for class ID: ${classId}`);
     const studentsQuery = query(collection(db, `classes/${classId}/students`), orderBy('studentName'));
     const snapshot = await getDocs(studentsQuery);
     if (snapshot.empty) {
         return [];
     }
-    const students = docsToObjects(snapshot).map(s => ({ id: s.id, studentName: s.studentName, nisn: s.nisn }));
+    const students = docsToObjects(snapshot).map((s: any): Student => ({ 
+        id: s.id, 
+        studentName: s.studentName, 
+        nisn: s.nisn 
+    }));
     console.log('Found students:', students);
     return students;
 }
@@ -38,7 +64,7 @@ interface AttendanceParams {
   days?: number;
 }
 
-export async function getAttendance(params: AttendanceParams) {
+export async function getAttendance(params: AttendanceParams): Promise<AttendanceRecord[] | string> {
     console.log('Fetching attendance with params:', params);
     let conditions = [];
 
@@ -62,7 +88,7 @@ export async function getAttendance(params: AttendanceParams) {
         if (snapshot.empty) {
             return `Tidak ada data absensi ditemukan dengan filter yang diberikan dalam ${days} hari terakhir.`;
         }
-        const attendance = docsToObjects(snapshot).map(a => ({ 
+        const attendance = docsToObjects(snapshot).map((a: any): AttendanceRecord => ({ 
             studentName: a.studentName, 
             date: a.date, 
             status: a.status 

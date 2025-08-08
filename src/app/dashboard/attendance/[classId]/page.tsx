@@ -1,9 +1,15 @@
 import { AttendanceSheet } from "@/components/attendance/attendance-sheet";
 
-export default function AttendancePage({ params }: { params: { classId: string } }) {
+export default async function AttendancePage({ 
+  params 
+}: { 
+  params: Promise<{ classId: string }> 
+}) {
+  const { classId } = await params;
+  
   return (
     <div className="container mx-auto">
-      <AttendanceSheet classId={params.classId} />
+      <AttendanceSheet classId={classId} />
     </div>
   );
 }
