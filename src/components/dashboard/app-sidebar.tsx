@@ -49,6 +49,8 @@ export function AppSidebar() {
   const navLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: Home, exact: true },
     { href: '/dashboard/classes', label: 'Daftar Kelas', icon: List },
+    { href: '/dashboard/attendance', label: 'Absensi', icon: CalendarCheck },
+    { href: '/dashboard/students', label: 'Siswa', icon: GraduationCap },
     { href: '/dashboard/teachers', label: 'Kelola Guru', icon: Users, adminOnly: true },
     { href: '/dashboard/reports', label: 'Laporan', icon: BarChart3 },
     { href: '/dashboard/chatbot', label: 'Chatbot', icon: Bot },
