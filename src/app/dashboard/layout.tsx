@@ -13,6 +13,8 @@ import {
   Users,
   Moon,
   Sun,
+  CalendarCheck,
+  GraduationCap,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
@@ -116,6 +118,20 @@ function DashboardHeader() {
                   >
                     <List className="h-5 w-5" />
                     Daftar Kelas
+                  </Link>
+                  <Link
+                    href="/dashboard/attendance"
+                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                  >
+                    <CalendarCheck className="h-5 w-5" />
+                    Absensi
+                  </Link>
+                  <Link
+                    href="/dashboard/students"
+                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                  >
+                    <GraduationCap className="h-5 w-5" />
+                    Siswa
                   </Link>
                   {userProfile?.role === 'admin' && (
                     <Link

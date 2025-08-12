@@ -16,9 +16,14 @@ interface Student {
 }
 
 interface AttendanceRecord {
+    id: string;
+    studentId: string;
     studentName: string;
+    classId: string;
     date: string;
     status: string;
+    checkInTime?: any;
+    checkOutTime?: any;
 }
 
 // Helper function to convert Firestore documents to plain objects
@@ -89,9 +94,14 @@ export async function getAttendance(params: AttendanceParams): Promise<Attendanc
             return `Tidak ada data absensi ditemukan dengan filter yang diberikan dalam ${days} hari terakhir.`;
         }
         const attendance = docsToObjects(snapshot).map((a: any): AttendanceRecord => ({ 
+            id: a.id,
+            studentId: a.studentId || '',
             studentName: a.studentName, 
+            classId: a.classId || '',
             date: a.date, 
-            status: a.status 
+            status: a.status,
+            checkInTime: a.checkInTime,
+            checkOutTime: a.checkOutTime
         }));
         console.log('Found attendance records:', attendance);
         return attendance;
@@ -102,5 +112,59 @@ export async function getAttendance(params: AttendanceParams): Promise<Attendanc
         }
         console.error('Error fetching attendance:', e);
         return `Terjadi kesalahan saat mengambil data absensi: ${e.message}`;
+    }
+}
+
+// New function to get attendance statistics
+export async function getAttendanceStats(days: number = 7): Promise<any> {
+    const startDate = format(subDays(new Date(), days), 'yyyy-MM-dd');
+    const attendanceQuery = query(
+        collection(db, 'attendance'),
+        where('date', '>=', startDate),
+        orderBy('date', 'desc')
+    );
+    
+    try {
+        const snapshot = await getDocs(attendanceQuery);
+        const records = docsToObjects(snapshot);
+        
+        // Calculate statistics
+        const stats = {
+            totalRecords: records.length,
+            statusBreakdown: {
+                Hadir: 0,
+                Sakit: 0,
+                Izin: 0,
+                Alfa: 0
+            },
+            dailyStats: {} as any,
+            classStats: {} as any
+        };
+        
+        records.forEach((record: any) => {
+            // Status breakdown
+            if (stats.statusBreakdown.hasOwnProperty(record.status)) {
+                stats.statusBreakdown[record.status as keyof typeof stats.statusBreakdown]++;
+            }
+            
+            // Daily stats
+            if (!stats.dailyStats[record.date]) {
+                stats.dailyStats[record.date] = { Hadir: 0, Sakit: 0, Izin: 0, Alfa: 0, total: 0 };
+            }
+            stats.dailyStats[record.date][record.status]++;
+            stats.dailyStats[record.date].total++;
+            
+            // Class stats
+            if (!stats.classStats[record.classId]) {
+                stats.classStats[record.classId] = { Hadir: 0, Sakit: 0, Izin: 0, Alfa: 0, total: 0 };
+            }
+            stats.classStats[record.classId][record.status]++;
+            stats.classStats[record.classId].total++;
+        });
+        
+        return stats;
+    } catch (error) {
+        console.error('Error fetching attendance stats:', error);
+        return null;
     }
 }

@@ -1,0 +1,8 @@
+{
+	"appId": "com.suhendararyadi.absensiku",
+	"appName": "AbsensiKu",
+	"webDir": "out",
+	"server": {
+		"androidScheme": "https"
+	}
+}

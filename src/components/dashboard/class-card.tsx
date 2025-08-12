@@ -15,6 +15,7 @@ import { Users, CalendarCheck, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EditClassDialog } from './edit-class-dialog';
 import { DeleteClassDialog } from './delete-class-dialog';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ClassCardProps {
   id: string;
@@ -23,6 +24,9 @@ interface ClassCardProps {
 }
 
 export function ClassCard({ id, name, studentCount }: ClassCardProps) {
+  const { userProfile } = useAuth();
+  const isAdmin = userProfile?.role === 'admin';
+
   return (
     <Card className="flex flex-col transition-all hover:shadow-lg">
       <CardHeader className="flex-grow">
@@ -34,22 +38,24 @@ export function ClassCard({ id, name, studentCount }: ClassCardProps) {
                 {studentCount} siswa terdaftar
                 </CardDescription>
             </div>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
-                        <MoreVertical className="h-4 w-4" />
-                        <span className="sr-only">Opsi Kelas</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                        <EditClassDialog classId={id} currentClassName={name} triggerType="menu" />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <DeleteClassDialog classId={id} className={name} triggerType="menu" />
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            {isAdmin && (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
+                            <MoreVertical className="h-4 w-4" />
+                            <span className="sr-only">Opsi Kelas</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                            <EditClassDialog classId={id} currentClassName={name} triggerType="menu" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <DeleteClassDialog classId={id} className={name} triggerType="menu" />
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )}
         </div>
       </CardHeader>
       <CardContent></CardContent>

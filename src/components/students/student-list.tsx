@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { ArrowLeft, MoreVertical } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface StudentData {
   id: string;
@@ -31,6 +32,8 @@ export function StudentList({ classId }: { classId: string }) {
   const [students, setStudents] = useState<StudentData[]>([]);
   const [classData, setClassData] = useState<ClassData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { userProfile } = useAuth();
+  const isAdmin = userProfile?.role === 'admin';
 
   useEffect(() => {
     const fetchClassData = async () => {
@@ -70,10 +73,12 @@ export function StudentList({ classId }: { classId: string }) {
                 </div>
                 <CardDescription>Tambah, impor, edit, atau hapus data siswa dari kelas ini.</CardDescription>
             </div>
-            <div className="flex gap-2">
-                <ImportStudentsDialog classId={classId} />
-                <AddStudentDialog classId={classId} />
-            </div>
+            {isAdmin && (
+                <div className="flex gap-2">
+                    <ImportStudentsDialog classId={classId} />
+                    <AddStudentDialog classId={classId} />
+                </div>
+            )}
         </div>
       </CardHeader>
       <CardContent>
@@ -100,30 +105,34 @@ export function StudentList({ classId }: { classId: string }) {
                   <TableCell className="font-medium">{student.studentName}</TableCell>
                   <TableCell>{student.nisn}</TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreVertical className="h-4 w-4" />
-                            <span className="sr-only">Opsi Siswa</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <EditStudentDialog 
-                            classId={classId} 
-                            studentId={student.id} 
-                            currentStudent={{studentName: student.studentName, nisn: student.nisn}} 
-                          />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <DeleteStudentDialog 
-                            classId={classId} 
-                            studentId={student.id} 
-                            studentName={student.studentName} 
-                          />
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {isAdmin ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="h-4 w-4" />
+                                <span className="sr-only">Opsi Siswa</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <EditStudentDialog 
+                                classId={classId} 
+                                studentId={student.id} 
+                                currentStudent={{studentName: student.studentName, nisn: student.nisn}} 
+                              />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <DeleteStudentDialog 
+                                classId={classId} 
+                                studentId={student.id} 
+                                studentName={student.studentName} 
+                              />
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

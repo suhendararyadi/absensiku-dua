@@ -13,6 +13,7 @@ const ChatInputSchema = z.object({
     content: z.string(),
   })),
   prompt: z.string(),
+  contextSummary: z.string().optional(), // Summary of previous conversation context
 });
 
 const ChatOutputSchema = z.string();
@@ -24,36 +25,81 @@ const attendanceChatFlow = ai.defineFlow(
     inputSchema: ChatInputSchema,
     outputSchema: ChatOutputSchema,
   },
-  async ({ history, prompt }) => {
+  async ({ history, prompt, contextSummary }) => {
     // Check if API key is available
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'placeholder-key-for-build') {
       throw new Error('GEMINI_API_KEY tidak tersedia. Silakan konfigurasi API key di environment variables.');
     }
 
     try {
+      // Manage conversation context - keep only recent messages if history is too long
+      let managedHistory = history;
+      let contextPrefix = '';
+      
+      // If history is longer than 10 messages, keep only the last 6 and use context summary
+      if (history.length > 10) {
+        const recentHistory = history.slice(-6);
+        managedHistory = recentHistory;
+        
+        if (contextSummary) {
+          contextPrefix = `\n=== RINGKASAN PERCAKAPAN SEBELUMNYA ===\n${contextSummary}\n\n`;
+        }
+      }
+      
       // Convert history to the correct format for messages
       const messages = [
-        ...history.map(h => ({
+        ...managedHistory.map(h => ({
           role: h.role as 'user' | 'model',
           content: [{ text: h.content }],
         })),
         {
           role: 'user' as const,
-          content: [{ text: prompt }],
+          content: [{ text: contextPrefix + prompt }],
         },
       ];
 
       const response = await ai.generate({
         model: googleAI.model('gemini-1.5-pro-latest'),
-        system: `Anda adalah ElektroBot, asisten AI untuk aplikasi absensi sekolah AbsensiKu.
-- Tugas utama Anda adalah menjawab pertanyaan pengguna HANYA BERDASARKAN data yang disediakan dalam prompt.
-- JANGAN mencoba mencari data sendiri. Semua informasi yang Anda butuhkan sudah ada dalam prompt.
-- Jawablah dengan ringkas dan jelas dalam Bahasa Indonesia.
-- Jika data yang dibutuhkan untuk menjawab pertanyaan tidak ada dalam prompt, katakan dengan sopan bahwa Anda tidak memiliki informasi tersebut.
-- Analisis data yang diberikan (terutama JSON) untuk memberikan jawaban yang akurat.`,
+        system: `Anda adalah ElektroBot, asisten AI cerdas untuk aplikasi absensi sekolah AbsensiKu.
+
+## KEMAMPUAN UTAMA:
+- Analisis data absensi siswa dan kelas secara mendalam
+- Memberikan insight dan tren kehadiran
+- Identifikasi pola absensi yang perlu perhatian
+- Rekomendasi tindakan berdasarkan data
+- Perhitungan statistik dan persentase kehadiran
+
+## ATURAN ANALISIS:
+1. SELALU gunakan HANYA data yang disediakan dalam prompt
+2. Berikan analisis yang komprehensif dan kontekstual
+3. Sertakan angka, persentase, dan statistik yang relevan
+4. Identifikasi tren dan pola dalam data
+5. Berikan rekomendasi praktis jika diminta
+6. Gunakan format yang mudah dibaca dengan bullet points atau numbering
+
+## GAYA KOMUNIKASI:
+- Gunakan Bahasa Indonesia yang profesional namun ramah
+- Berikan jawaban yang terstruktur dan informatif
+- Sertakan konteks waktu (hari ini, minggu ini, dll)
+- Highlight informasi penting dengan format yang jelas
+- Jika data tidak tersedia, jelaskan dengan sopan dan sarankan alternatif
+- PENTING: Pahami konteks percakapan sebelumnya dan rujuk ke informasi yang telah dibahas
+- Gunakan kata ganti seperti "seperti yang saya sebutkan sebelumnya", "berdasarkan analisis tadi", dll untuk menunjukkan pemahaman konteks
+
+## CONTOH ANALISIS:
+- "Berdasarkan data 7 hari terakhir, tingkat kehadiran kelas 11A adalah 85% dengan 3 siswa yang sering tidak hadir"
+- "Tren absensi menunjukkan peningkatan ketidakhadiran pada hari Senin sebesar 15%"
+- "Siswa dengan status 'Sakit' paling banyak ditemukan di kelas 10B (5 kasus)"
+
+## CONTOH RESPON KONTEKSTUAL:
+- "Seperti yang saya analisis sebelumnya, kelas 11A memang memiliki masalah kehadiran..."
+- "Berdasarkan pembahasan tadi tentang siswa yang sering tidak hadir, berikut rekomendasi tindakan..."
+- "Melanjutkan analisis tren yang kita bahas, data menunjukkan..."
+
+Jawablah dengan analisis yang mendalam dan actionable insights.`,
         messages: messages,
         config: {
-          temperature: 0.2,
+          temperature: 0.3,
         },
       });
 
@@ -76,6 +122,40 @@ const attendanceChatFlow = ai.defineFlow(
 // Export types and the main chat function
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
+
+// Function to create conversation summary
+export async function createConversationSummary(messages: Array<{role: 'user' | 'model', content: string}>): Promise<string> {
+  if (messages.length === 0) return '';
+  
+  try {
+    const conversationText = messages.map(msg => 
+      `${msg.role === 'user' ? 'Pengguna' : 'ElektroBot'}: ${msg.content}`
+    ).join('\n\n');
+    
+    const summaryResponse = await ai.generate({
+      model: googleAI.model('gemini-1.5-pro-latest'),
+      system: `Anda adalah asisten yang membuat ringkasan percakapan. Buatlah ringkasan singkat dan padat dari percakapan berikut dalam Bahasa Indonesia. Fokus pada:
+1. Topik utama yang dibahas
+2. Data atau insight penting yang ditemukan
+3. Pertanyaan atau analisis yang telah dilakukan
+4. Kesimpulan atau rekomendasi yang diberikan
+
+Ringkasan harus dalam 2-3 kalimat dan mempertahankan konteks penting untuk percakapan selanjutnya.`,
+      messages: [{
+        role: 'user' as const,
+        content: [{ text: `Buatlah ringkasan dari percakapan berikut:\n\n${conversationText}` }]
+      }],
+      config: {
+        temperature: 0.1,
+      },
+    });
+    
+    return summaryResponse.text;
+  } catch (error) {
+    console.error('Error creating conversation summary:', error);
+    return 'Percakapan sebelumnya membahas analisis data absensi dan statistik kehadiran siswa.';
+  }
+}
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
   try {
