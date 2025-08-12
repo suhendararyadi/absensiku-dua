@@ -61,7 +61,7 @@ interface AnalyticsData {
 export function AdvancedAnalytics() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('trends');
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -227,13 +227,12 @@ export function AdvancedAnalytics() {
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Ringkasan</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="trends">Tren</TabsTrigger>
             <TabsTrigger value="performance">Performa</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-4">
+          <TabsContent value="trends" className="space-y-4">
             {/* Key Metrics */}
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -274,82 +273,7 @@ export function AdvancedAnalytics() {
               </div>
             </div>
 
-            {/* Daily Statistics */}
-            <div className="bg-white p-4 rounded-lg border">
-              <h4 className="font-medium mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Statistik Harian
-              </h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-green-50 rounded-lg border border-green-200">
-                  <div className="text-2xl font-bold text-green-700">
-                    {analytics.dailyStats?.present || 0}
-                  </div>
-                  <div className="text-sm text-green-600 font-medium">Hadir Hari Ini</div>
-                  <div className="text-xs text-green-500 mt-1">
-                    {analytics.dailyStats?.presentRate || 0}% dari total
-                  </div>
-                </div>
-                
-                <div className="text-center p-3 bg-red-50 rounded-lg border border-red-200">
-                  <div className="text-2xl font-bold text-red-700">
-                    {analytics.dailyStats?.absent || 0}
-                  </div>
-                  <div className="text-sm text-red-600 font-medium">Tidak Hadir</div>
-                  <div className="text-xs text-red-500 mt-1">
-                    {analytics.dailyStats?.absentRate || 0}% dari total
-                  </div>
-                </div>
-                
-                <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="text-2xl font-bold text-blue-700">
-                    {analytics.dailyStats?.totalStudents || 0}
-                  </div>
-                  <div className="text-sm text-blue-600 font-medium">Total Siswa</div>
-                  <div className="text-xs text-blue-500 mt-1">
-                    Terdaftar aktif
-                  </div>
-                </div>
-                
-                <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                  <div className="text-2xl font-bold text-purple-700">
-                    {analytics.dailyStats?.attendanceRate || 0}%
-                  </div>
-                  <div className="text-sm text-purple-600 font-medium">Tingkat Kehadiran</div>
-                  <div className="text-xs text-purple-500 mt-1">
-                    Hari ini
-                  </div>
-                </div>
-              </div>
-              
-              {/* Quick Status Overview */}
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-gray-700">Status Kehadiran Hari Ini:</span>
-                  <div className="flex gap-4">
-                    <span className="text-green-600">
-                      <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                      Hadir: {analytics.dailyStats?.statusBreakdown?.Hadir || 0}
-                    </span>
-                    <span className="text-yellow-600">
-                      <span className="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
-                      Sakit: {analytics.dailyStats?.statusBreakdown?.Sakit || 0}
-                    </span>
-                    <span className="text-blue-600">
-                      <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-                      Izin: {analytics.dailyStats?.statusBreakdown?.Izin || 0}
-                    </span>
-                    <span className="text-red-600">
-                      <span className="inline-block w-2 h-2 bg-red-500 rounded-full mr-1"></span>
-                      Alfa: {analytics.dailyStats?.statusBreakdown?.Alfa || 0}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
 
-          <TabsContent value="trends" className="space-y-4">
             <div className="bg-white p-4 rounded-lg border">
               <h4 className="font-medium mb-3">Tren Kehadiran 7 Hari Terakhir</h4>
               <div className="h-48">

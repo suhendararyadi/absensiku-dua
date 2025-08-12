@@ -11,6 +11,8 @@ import {
   Users,
   ChevronUp,
   User2,
+  CalendarCheck,
+  GraduationCap,
 } from 'lucide-react';
 
 import {

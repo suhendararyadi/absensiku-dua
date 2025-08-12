@@ -11,7 +11,11 @@ import {
   BarChart3,
   BookUser,
   Users,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 import {
   Breadcrumb,
@@ -22,14 +26,6 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { 
   SidebarProvider, 
@@ -41,8 +37,14 @@ import { useAuth } from '@/hooks/use-auth';
 import { AppSidebar } from '../../components/dashboard/app-sidebar'
 
 function DashboardHeader() {
-    const { user, signOut, userProfile } = useAuth();
+    const { userProfile } = useAuth();
     const pathname = usePathname();
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const getBreadcrumb = () => {
         if (pathname === '/dashboard') return 'Dashboard';
@@ -55,6 +57,10 @@ function DashboardHeader() {
         return 'Halaman';
     }
 
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+    };
+
 
     return (
          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -65,7 +71,7 @@ function DashboardHeader() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/dashboard">AbsensiKu</Link>
+                    <Link href="/dashboard">AbsensiKu - Sistem Manajemen Kehadiran</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -142,25 +148,21 @@ function DashboardHeader() {
             </div>
           </div>
           <div className="ml-auto px-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="overflow-hidden rounded-full"
-                >
-                   <BookUser className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut}>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full"
+            >
+              {mounted && (
+                theme === 'dark' ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
           </div>
         </header>
     )
