@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview A chatbot flow that answers questions based on provided context.
  */
