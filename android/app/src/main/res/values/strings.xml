@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AbsensiKu</string>
+    <string name="title_activity_main">AbsensiKu</string>
+    <string name="package_name">com.suhendararyadi.absensiku</string>
+    <string name="custom_url_scheme">com.suhendararyadi.absensiku</string>
+</resources>

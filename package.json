@@ -15,6 +15,9 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2",
     "@genkit-ai/firebase": "^1.16.0",
     "@genkit-ai/googleai": "^1.16.0",
     "@genkit-ai/next": "^1.16.0",
