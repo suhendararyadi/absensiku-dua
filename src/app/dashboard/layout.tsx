@@ -43,6 +43,7 @@ function DashboardHeader() {
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -86,7 +87,7 @@ function DashboardHeader() {
 
           {/* Mobile: Sheet Trigger + Title */}
            <div className="flex md:hidden items-center gap-3">
-              <Sheet>
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <Button size="icon" variant="outline">
                     <PanelLeft className="h-5 w-5" />
@@ -108,6 +109,7 @@ function DashboardHeader() {
                   <Link
                     href="/dashboard"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <Home className="h-5 w-5" />
                     Dashboard
@@ -115,6 +117,7 @@ function DashboardHeader() {
                   <Link
                     href="/dashboard/classes"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <List className="h-5 w-5" />
                     Daftar Kelas
@@ -122,6 +125,7 @@ function DashboardHeader() {
                   <Link
                     href="/dashboard/attendance"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <CalendarCheck className="h-5 w-5" />
                     Absensi
@@ -129,6 +133,7 @@ function DashboardHeader() {
                   <Link
                     href="/dashboard/students"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <GraduationCap className="h-5 w-5" />
                     Siswa
@@ -137,6 +142,7 @@ function DashboardHeader() {
                     <Link
                       href="/dashboard/teachers"
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                      onClick={() => setIsSheetOpen(false)}
                     >
                       <Users className="h-5 w-5" />
                       Kelola Guru
@@ -145,6 +151,7 @@ function DashboardHeader() {
                   <Link
                     href="/dashboard/reports"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <BarChart3 className="h-5 w-5" />
                     Laporan
@@ -152,6 +159,7 @@ function DashboardHeader() {
                    <Link
                     href="/dashboard/chatbot"
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     <Bot className="h-5 w-5" />
                     Chatbot
