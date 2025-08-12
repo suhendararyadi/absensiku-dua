@@ -34,7 +34,7 @@ export function AddTeacherDialog() {
                     <ol className="list-decimal pl-5 space-y-1 mt-2">
                         <li>Buka Firebase Console project Anda.</li>
                         <li>Masuk ke bagian <strong>Authentication</strong>.</li>
-                        <li>Klik <strong>Add user</strong>, lalu isi email dan password untuk guru.</li>
+                        <li>Klik <strong>Tambah pengguna</strong>, lalu isi email dan password untuk guru.</li>
                         <li>Setelah dibuat, <strong>salin User UID</strong> dari akun baru tersebut.</li>
                     </ol>
                 </AlertDescription>
@@ -46,7 +46,7 @@ export function AddTeacherDialog() {
                      <ol className="list-decimal pl-5 space-y-1 mt-2">
                         <li>Masuk ke bagian <strong>Firestore Database</strong>.</li>
                         <li>Buka koleksi <strong>users</strong>.</li>
-                        <li>Klik <strong>Add document</strong>.</li>
+                        <li>Klik <strong>Tambah dokumen</strong>.</li>
                         <li>Gunakan <strong>User UID</strong> yang tadi disalin sebagai <strong>Document ID</strong>.</li>
                         <li>Tambahkan 2 field:
                             <ul className="list-disc pl-6 mt-1">
@@ -54,7 +54,7 @@ export function AddTeacherDialog() {
                                 <li>Field 2: Key: `role`, Type: `string`, Value: `guru`</li>
                             </ul>
                         </li>
-                        <li>Klik <strong>Save</strong>. Akun guru akan langsung muncul di daftar.</li>
+                        <li>Klik <strong>Simpan</strong>. Akun guru akan langsung muncul di daftar.</li>
                     </ol>
                 </AlertDescription>
             </Alert>

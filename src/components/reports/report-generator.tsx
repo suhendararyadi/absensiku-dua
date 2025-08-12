@@ -73,7 +73,7 @@ export function ReportGenerator() {
             } catch (error) {
                 console.error('Error fetching classes:', error);
                 toast({
-                    title: 'Error',
+                    title: 'Kesalahan',
                     description: 'Gagal memuat daftar kelas.',
                     variant: 'destructive',
                 });
@@ -211,7 +211,7 @@ export function ReportGenerator() {
         } catch (error) {
             console.error('Error generating report:', error);
             toast({
-                title: 'Error',
+                title: 'Kesalahan',
                 description: 'Gagal membuat laporan. Silakan coba lagi.',
                 variant: 'destructive',
             });

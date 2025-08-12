@@ -44,7 +44,7 @@ export function DeleteStudentDialog({ classId, studentId, studentName }: DeleteS
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: `Gagal menghapus siswa: ${error}`,
       });
     } finally {

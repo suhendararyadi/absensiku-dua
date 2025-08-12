@@ -136,12 +136,12 @@ function DashboardHeader() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>Pengaturan</DropdownMenuItem>
+              <DropdownMenuItem>Bantuan</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={signOut}>Keluar</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

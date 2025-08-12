@@ -19,6 +19,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, L
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
+import { id } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface AnalyticsData {
@@ -75,7 +76,7 @@ export function AdvancedAnalytics() {
         const weeklyData = [];
         for (let i = 0; i < 7; i++) {
           const date = format(subDays(today, 6 - i), 'yyyy-MM-dd');
-          const dayName = format(subDays(today, 6 - i), 'EEE');
+          const dayName = format(subDays(today, 6 - i), 'EEE', { locale: id });
           
           const dayQuery = query(
             collection(db, 'attendance'),
@@ -332,7 +333,7 @@ export function AdvancedAnalytics() {
                     <Badge 
                       variant={cls.rate >= 90 ? "default" : cls.rate >= 80 ? "secondary" : "destructive"}
                     >
-                      {cls.total} data
+                      {cls.total} siswa
                     </Badge>
                   </div>
                 ))}
@@ -347,7 +348,7 @@ export function AdvancedAnalytics() {
                   <h5 className="font-medium text-amber-800 mb-1">Insight Performa</h5>
                   <p className="text-sm text-amber-700">
                     {analytics.classPerformance.length > 0 && analytics.classPerformance[0].rate >= 95
-                      ? `Excellent! ${analytics.classPerformance[0].className} memiliki tingkat kehadiran tertinggi.`
+                      ? `Luar biasa! ${analytics.classPerformance[0].className} memiliki tingkat kehadiran tertinggi.`
                       : analytics.classPerformance.some(c => c.rate < 80)
                       ? "Beberapa kelas memerlukan perhatian khusus untuk meningkatkan kehadiran."
                       : "Performa kehadiran secara keseluruhan cukup baik."

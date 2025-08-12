@@ -60,7 +60,7 @@ export function EditStudentDialog({ classId, studentId, currentStudent }: EditSt
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: 'Gagal memperbarui data siswa.',
       });
     } finally {

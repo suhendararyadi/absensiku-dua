@@ -44,7 +44,7 @@ export function DeleteClassDialog({ classId, className, triggerType = 'button' }
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: 'Gagal menghapus kelas.',
       });
     } finally {

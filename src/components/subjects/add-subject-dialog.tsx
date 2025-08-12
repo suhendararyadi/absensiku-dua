@@ -75,7 +75,7 @@ export function AddSubjectDialog() {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: 'Gagal menambahkan mata pelajaran baru.',
       });
     } finally {

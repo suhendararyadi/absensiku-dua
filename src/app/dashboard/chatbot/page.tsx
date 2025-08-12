@@ -99,7 +99,7 @@ export default function ChatbotPage() {
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: `Gagal mendapatkan respon dari AI: ${error.message}. Coba lagi.`
       });
       // Restore the old messages if the API call fails

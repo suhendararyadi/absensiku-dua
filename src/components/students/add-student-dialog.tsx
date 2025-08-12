@@ -59,7 +59,7 @@ export function AddStudentDialog({ classId }: { classId: string }) {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: `Gagal menambahkan siswa: ${error}`,
       });
     } finally {

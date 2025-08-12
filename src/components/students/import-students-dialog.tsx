@@ -114,7 +114,7 @@ export function ImportStudentsDialog({ classId }: { classId: string }) {
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: `Gagal mengimpor siswa: ${error.message}`,
       });
     } finally {

@@ -84,15 +84,15 @@ export function StudentRanking({ data }: StudentRankingProps) {
     const getRankBadge = (rank: number, attendanceRate: number) => {
         if (rank <= 3) {
             const colors = ['bg-yellow-100 text-yellow-800', 'bg-gray-100 text-gray-800', 'bg-amber-100 text-amber-800'];
-            return <Badge className={colors[rank - 1]}>Top {rank}</Badge>;
+            return <Badge className={colors[rank - 1]}>Peringkat {rank}</Badge>;
         } else if (attendanceRate >= 90) {
-            return <Badge className="bg-green-100 text-green-800">Excellent</Badge>;
+            return <Badge className="bg-green-100 text-green-800">Sangat Baik</Badge>;
         } else if (attendanceRate >= 80) {
-            return <Badge className="bg-blue-100 text-blue-800">Good</Badge>;
+            return <Badge className="bg-blue-100 text-blue-800">Baik</Badge>;
         } else if (attendanceRate >= 70) {
-            return <Badge className="bg-yellow-100 text-yellow-800">Fair</Badge>;
+            return <Badge className="bg-yellow-100 text-yellow-800">Cukup</Badge>;
         } else {
-            return <Badge className="bg-red-100 text-red-800">Needs Attention</Badge>;
+            return <Badge className="bg-red-100 text-red-800">Perlu Perhatian</Badge>;
         }
     };
 
@@ -111,12 +111,12 @@ export function StudentRanking({ data }: StudentRankingProps) {
 
     return (
         <div className="space-y-6">
-            {/* Top Performers */}
+            {/* Siswa Terbaik */}
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Trophy className="h-5 w-5 text-yellow-500" />
-                        Top Performers
+                        Siswa Terbaik
                     </CardTitle>
                     <CardDescription>Siswa dengan tingkat kehadiran terbaik</CardDescription>
                 </CardHeader>
@@ -147,7 +147,7 @@ export function StudentRanking({ data }: StudentRankingProps) {
                 </CardContent>
             </Card>
 
-            {/* Students Needing Attention */}
+            {/* Siswa yang Perlu Perhatian */}
             {needsAttention.length > 0 && (
                 <Card className="border-red-200">
                     <CardHeader>
@@ -174,7 +174,7 @@ export function StudentRanking({ data }: StudentRankingProps) {
                                         <p className="text-lg font-bold text-red-900">
                                             {student.attendanceRate.toFixed(1)}%
                                         </p>
-                                        <Badge className="bg-red-100 text-red-800">Rank #{student.rank}</Badge>
+                                        <Badge className="bg-red-100 text-red-800">Peringkat #{student.rank}</Badge>
                                     </div>
                                 </div>
                             ))}
@@ -183,7 +183,7 @@ export function StudentRanking({ data }: StudentRankingProps) {
                 </Card>
             )}
 
-            {/* Complete Ranking Table */}
+            {/* Tabel Peringkat Lengkap */}
             <Card>
                 <CardHeader>
                     <CardTitle>Ranking Lengkap Siswa</CardTitle>
@@ -193,7 +193,7 @@ export function StudentRanking({ data }: StudentRankingProps) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-16">Rank</TableHead>
+                                <TableHead className="w-16">Peringkat</TableHead>
                                 <TableHead>Nama Siswa</TableHead>
                                 <TableHead className="text-center">Hadir</TableHead>
                                 <TableHead className="text-center">Sakit</TableHead>

@@ -55,7 +55,7 @@ export function AddClassDialog() {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: 'Gagal menambahkan kelas baru.',
       });
     } finally {

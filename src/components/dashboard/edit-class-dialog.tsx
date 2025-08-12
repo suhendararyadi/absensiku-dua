@@ -67,7 +67,7 @@ export function EditClassDialog({ classId, currentClassName, triggerType = 'butt
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Kesalahan',
         description: 'Gagal memperbarui nama kelas.',
       });
     } finally {
