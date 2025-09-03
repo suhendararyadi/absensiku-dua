@@ -107,7 +107,6 @@ Jawablah dengan analisis yang mendalam dan actionable insights.`,
         messages: messages,
         config: {
           temperature: 0.3,
-          maxOutputTokens: 150, // Batasi response untuk menghemat tokens di free tier
         },
       });
 
