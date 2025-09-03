@@ -15,6 +15,8 @@ import { ConversationHistory } from '@/components/chatbot/conversation-history';
 import { ContextIndicator } from '@/components/chatbot/context-indicator';
 import { FollowUpSuggestions } from '@/components/chatbot/follow-up-suggestions';
 import { MarkdownRenderer } from '@/components/chatbot/markdown-renderer';
+import { UsageDashboard } from '@/components/chatbot/usage-dashboard';
+import { UsageTracker } from '@/lib/usage-tracker';
 
 interface Message {
   role: 'user' | 'model';
@@ -64,6 +66,18 @@ export default function ChatbotPage() {
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
+
+    // Check rate limiting before proceeding
+    try {
+      UsageTracker.checkRateLimit();
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Batas Penggunaan Tercapai',
+        description: error.message
+      });
+      return;
+    }
 
     const userMessage: Message = { role: 'user', content: input };
     const currentMessages = [...messages, userMessage];
@@ -202,6 +216,9 @@ export default function ChatbotPage() {
           ElektroBot dapat menganalisis data absensi secara mendalam dan memberikan insight yang actionable. Gunakan saran pertanyaan di bawah atau tanyakan apa saja tentang data absensi Anda.
         </AlertDescription>
       </Alert>
+      
+      {/* Usage Dashboard */}
+      <UsageDashboard />
       
       <ContextIndicator 
         messageCount={messages.length}

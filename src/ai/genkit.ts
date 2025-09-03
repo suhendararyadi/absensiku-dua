@@ -15,5 +15,5 @@ export const ai = genkit({
       apiKey: apiKey || 'placeholder-key-for-build',
     }),
   ],
-  model: googleAI.model('gemini-1.5-pro-latest'), // Set default model
+  model: googleAI.model('gemini-1.5-flash'), // Set default model to free tier
 });

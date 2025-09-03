@@ -5,6 +5,7 @@
 import { ai } from '@/ai/genkit';
 import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
+import { UsageTracker } from '@/lib/usage-tracker';
 
 // Define input and output schemas
 const ChatInputSchema = z.object({
@@ -29,6 +30,12 @@ const attendanceChatFlow = ai.defineFlow(
     // Check if API key is available
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'placeholder-key-for-build') {
       throw new Error('GEMINI_API_KEY tidak tersedia. Silakan konfigurasi API key di environment variables.');
+    }
+
+    // Check rate limiting for Gemini 1.5 Flash free tier
+    const rateLimitCheck = UsageTracker.checkRateLimit();
+    if (!rateLimitCheck.allowed) {
+      throw new Error(rateLimitCheck.reason || 'Rate limit exceeded');
     }
 
     try {
@@ -59,7 +66,7 @@ const attendanceChatFlow = ai.defineFlow(
       ];
 
       const response = await ai.generate({
-        model: googleAI.model('gemini-1.5-pro-latest'),
+        model: googleAI.model('gemini-1.5-flash'),
         system: `Anda adalah ElektroBot, asisten AI cerdas untuk aplikasi absensi sekolah AbsensiKu.
 
 ## KEMAMPUAN UTAMA:
@@ -100,8 +107,13 @@ Jawablah dengan analisis yang mendalam dan actionable insights.`,
         messages: messages,
         config: {
           temperature: 0.3,
+          maxOutputTokens: 150, // Batasi response untuk menghemat tokens di free tier
         },
       });
+
+      // Track usage after successful response
+      const tokensUsed = (response.usage?.inputTokens || 0) + (response.usage?.outputTokens || 0);
+      UsageTracker.incrementUsage(tokensUsed);
 
       return response.text;
     } catch (error: any) {
